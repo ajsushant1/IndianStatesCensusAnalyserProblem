@@ -14,11 +14,14 @@ import java.util.Iterator;
 public class StateCensusAnalyser {
 
     //METHOD TO LOAD CSV DATA AND COUNT NUMBER OF RECORD IN CSV FILE
-    public int loadCSVData(String filePath) throws StateCensusAnalyserException, IOException {
+    public int loadCSVData(String filePath) throws StateCensusAnalyserException {
         int numberOfRecords = 0;
-        try (
-                Reader reader = Files.newBufferedReader(Paths.get(filePath));
-        ) {
+        String extension = filePath.substring(filePath.lastIndexOf(".") + 1);
+        try {
+            if (!extension.equals("csv")) {
+                throw new StateCensusAnalyserException(StateCensusAnalyserException.ExceptionType.INCORRECT_FILE_TYPE, "File");
+            }
+            Reader reader = Files.newBufferedReader(Paths.get(filePath));
             CsvToBean<CSVStateCensus> csvStateCensusCsvToBean = new CsvToBeanBuilder(reader)
                     .withType(CSVStateCensus.class)
                     .withIgnoreLeadingWhiteSpace(true)
@@ -30,6 +33,8 @@ public class StateCensusAnalyser {
             }
         } catch (NoSuchFileException e) {
             throw new StateCensusAnalyserException(StateCensusAnalyserException.ExceptionType.NO_SUCH_FILE, "No such file");
+        } catch (IOException e) {
+            e.getStackTrace();
         }
         return numberOfRecords;
     }
@@ -37,5 +42,6 @@ public class StateCensusAnalyser {
     //MAIN METHOD
     public static void main(String[] args) {
         System.out.println("/**************************/ WELCOME TO STATE CENSUS ANALYSER /**************************/");
+
     }
 }
