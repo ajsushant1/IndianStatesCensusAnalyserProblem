@@ -10,6 +10,7 @@ public class StateCensusAnalyserTest {
     private static final String CSV_FILE_PATH = "src/test/resources/StateCensusData.csv";
     private static final String INCORRECT_FILE_NAME = "src/test/resource/StateCensusData.csv";
     private static final String INCORRECT_FILE_TYPE = "src/test/resources/StateCensusData.pdf";
+    private static final String INCORRECT_DELIMITER_FILE = "src/test/resources/StateCensusDataIncorrectDelimiter.csv";
 
     @Test
     public void givenTheStatesCensusCSVFile_WhenNumberOfRecordMatches_ShouldReturnTrue() {
@@ -36,6 +37,15 @@ public class StateCensusAnalyserTest {
             stateCensusAnalyser.loadCSVData(INCORRECT_FILE_TYPE);
         } catch (StateCensusAnalyserException e) {
             Assert.assertEquals(StateCensusAnalyserException.ExceptionType.INCORRECT_FILE_TYPE, e.type);
+        }
+    }
+
+    @Test
+    public void givenTheStateCensusCSVFile_WhenIncorrectDelimiter_ShouldThrowCustomException() {
+        try {
+            stateCensusAnalyser.loadCSVData(INCORRECT_DELIMITER_FILE);
+        } catch (StateCensusAnalyserException e) {
+            Assert.assertEquals(StateCensusAnalyserException.ExceptionType.INCORRECT_DELIMITER, e.type);
         }
     }
 }
