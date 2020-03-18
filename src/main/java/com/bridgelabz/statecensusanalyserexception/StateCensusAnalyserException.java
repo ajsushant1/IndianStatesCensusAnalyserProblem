@@ -1,12 +1,10 @@
 package com.bridgelabz.statecensusanalyserexception;
 
-import java.io.IOException;
-
 public class StateCensusAnalyserException extends Exception {
 
-    //ENUM
+    //ENUM CLASS
     public enum ExceptionType {
-        NO_SUCH_FILE;
+        NO_SUCH_FILE, INCORRECT_FILE_TYPE;
     }
 
     public ExceptionType type;
