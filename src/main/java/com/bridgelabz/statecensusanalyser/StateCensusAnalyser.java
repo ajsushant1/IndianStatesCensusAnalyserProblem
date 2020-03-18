@@ -17,11 +17,11 @@ public class StateCensusAnalyser {
     public int loadCSVData(String filePath) throws StateCensusAnalyserException {
         int numberOfRecords = 0;
         String extension = filePath.substring(filePath.lastIndexOf(".") + 1);
-        try {
-            if (!extension.equals("csv")) {
-                throw new StateCensusAnalyserException(StateCensusAnalyserException.ExceptionType.INCORRECT_FILE_TYPE, "File");
-            }
-            Reader reader = Files.newBufferedReader(Paths.get(filePath));
+        if (!extension.equals("csv")) {
+            throw new StateCensusAnalyserException(StateCensusAnalyserException.ExceptionType.INCORRECT_FILE_TYPE, "Incorrect file type");
+        }
+
+        try (Reader reader = Files.newBufferedReader(Paths.get(filePath))) {
             CsvToBean<CSVStateCensus> csvStateCensusCsvToBean = new CsvToBeanBuilder(reader)
                     .withType(CSVStateCensus.class)
                     .withIgnoreLeadingWhiteSpace(true)
@@ -31,6 +31,8 @@ public class StateCensusAnalyser {
                 csvStateCensusIterator.next();
                 numberOfRecords++;
             }
+        } catch (RuntimeException e) {
+            throw new StateCensusAnalyserException(StateCensusAnalyserException.ExceptionType.INCORRECT_DELIMITER, "Incorrect delimiter");
         } catch (NoSuchFileException e) {
             throw new StateCensusAnalyserException(StateCensusAnalyserException.ExceptionType.NO_SUCH_FILE, "No such file");
         } catch (IOException e) {
