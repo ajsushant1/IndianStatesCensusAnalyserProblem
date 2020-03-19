@@ -6,11 +6,12 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class StateCensusAnalyserTest {
-    StateCensusAnalyser stateCensusAnalyser = new StateCensusAnalyser();
     private static final String CSV_FILE_PATH = "src/test/resources/StateCensusData.csv";
     private static final String INCORRECT_FILE_NAME = "src/test/resource/StateCensusData.csv";
     private static final String INCORRECT_FILE_TYPE = "src/test/resources/StateCensusData.pdf";
     private static final String INCORRECT_DELIMITER_FILE = "src/test/resources/StateCensusDataIncorrectDelimiter.csv";
+    private static final String INCORRECT_HEADER_FILE = "./src/test/resources/StateCensusDataIncorrectHeader.csv";
+    StateCensusAnalyser stateCensusAnalyser = new StateCensusAnalyser();
 
     @Test
     public void givenTheStatesCensusCSVFile_WhenNumberOfRecordMatches_ShouldReturnTrue() {
@@ -45,7 +46,16 @@ public class StateCensusAnalyserTest {
         try {
             stateCensusAnalyser.loadCSVData(INCORRECT_DELIMITER_FILE);
         } catch (StateCensusAnalyserException e) {
-            Assert.assertEquals(StateCensusAnalyserException.ExceptionType.INCORRECT_DELIMITER, e.type);
+            Assert.assertEquals(StateCensusAnalyserException.ExceptionType.INCORRECT_DELIMITER_OR_HEADER, e.type);
+        }
+    }
+
+    @Test
+    public void givenTheStateCensusCSVFile_WhenIncorrectHeader_ShouldThrowCustomException() {
+        try {
+            stateCensusAnalyser.loadCSVData(INCORRECT_HEADER_FILE);
+        } catch (StateCensusAnalyserException e) {
+            Assert.assertEquals(StateCensusAnalyserException.ExceptionType.INCORRECT_DELIMITER_OR_HEADER, e.type);
         }
     }
 }
