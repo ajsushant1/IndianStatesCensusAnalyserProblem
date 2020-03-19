@@ -50,6 +50,10 @@ public class StateCensusAnalyser {
     //METHOD TO LOAD STATE CODE CSV DATA AND COUNT NUMBER OF RECORD IN CSV FILE
     public int loadStateCodeCSVData(String filePath) throws StateCensusAnalyserException {
         int numberOfRecords = 0;
+        String extension = filePath.substring(filePath.lastIndexOf(".") + 1);
+        if (!extension.equals("csv")) {
+            throw new StateCensusAnalyserException(StateCensusAnalyserException.ExceptionType.INCORRECT_FILE_TYPE, "Incorrect file type");
+        }
         try (Reader reader = Files.newBufferedReader(Paths.get(filePath))) {
             CsvToBean<CSVStateCode> csvStateCodeCsvToBean = new CsvToBeanBuilder(reader)
                     .withType(CSVStateCode.class)
