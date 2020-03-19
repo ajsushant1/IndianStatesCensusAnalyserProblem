@@ -13,6 +13,7 @@ public class StateCensusAnalyserTest {
     private static final String INCORRECT_HEADER_FILE = "src/test/resources/StateCensusDataIncorrectHeader.csv";
     private static final String STATE_CODE_CSV_FILE_PATH = "src/test/resources/StateCode.csv";
     private static final String STATE_CODE_INCORRECT_CSV_FILE_PATH = "src/test/resource/StateCode.csv";
+    private static final String STATE_CODE_INCORRECT_FILE_TYPE = "src/test/resources/StateCode.pdf";
     StateCensusAnalyser stateCensusAnalyser = new StateCensusAnalyser();
 
     @Test
@@ -72,12 +73,20 @@ public class StateCensusAnalyserTest {
     }
 
     @Test
-    public void givenTheStateCensusCSVFile_WhenIncorrectFilePath_ShouldThrowCustomException() {
+    public void givenTheStateCodeCSVFile_WhenIncorrectFilePath_ShouldThrowCustomException() {
         try {
             stateCensusAnalyser.loadStateCodeCSVData(STATE_CODE_INCORRECT_CSV_FILE_PATH);
         } catch (StateCensusAnalyserException e) {
             Assert.assertEquals(StateCensusAnalyserException.ExceptionType.NO_SUCH_FILE, e.type);
         }
+    }
 
+    @Test
+    public void givenTheStateCodeCSVFile_WhenIncorrectFileType_ShouldThrowCustomException() {
+        try {
+            stateCensusAnalyser.loadStateCodeCSVData(STATE_CODE_INCORRECT_FILE_TYPE);
+        } catch (StateCensusAnalyserException e) {
+            Assert.assertEquals(StateCensusAnalyserException.ExceptionType.INCORRECT_FILE_TYPE, e.type);
+        }
     }
 }
