@@ -64,6 +64,8 @@ public class StateCensusAnalyser {
                 csvStateCodeIterator.next();
                 numberOfRecords++;
             }
+        } catch (RuntimeException e) {
+            throw new StateCensusAnalyserException(StateCensusAnalyserException.ExceptionType.INCORRECT_DELIMITER_OR_HEADER, "Incorrect delimiter in file");
         } catch (NoSuchFileException e) {
             throw new StateCensusAnalyserException(StateCensusAnalyserException.ExceptionType.NO_SUCH_FILE, "No such file");
         } catch (IOException e) {
