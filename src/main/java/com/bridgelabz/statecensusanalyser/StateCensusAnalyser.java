@@ -13,6 +13,12 @@ import java.util.Iterator;
 
 public class StateCensusAnalyser {
 
+    //MAIN METHOD
+    public static void main(String[] args) {
+        System.out.println("/**************************/ WELCOME TO STATE CENSUS ANALYSER /**************************/");
+
+    }
+
     //METHOD TO LOAD CSV DATA AND COUNT NUMBER OF RECORD IN CSV FILE
     public int loadCSVData(String filePath) throws StateCensusAnalyserException {
         int numberOfRecords = 0;
@@ -32,18 +38,12 @@ public class StateCensusAnalyser {
                 numberOfRecords++;
             }
         } catch (RuntimeException e) {
-            throw new StateCensusAnalyserException(StateCensusAnalyserException.ExceptionType.INCORRECT_DELIMITER, "Incorrect delimiter");
+            throw new StateCensusAnalyserException(StateCensusAnalyserException.ExceptionType.INCORRECT_DELIMITER_OR_HEADER, "Incorrect delimiter or header");
         } catch (NoSuchFileException e) {
             throw new StateCensusAnalyserException(StateCensusAnalyserException.ExceptionType.NO_SUCH_FILE, "No such file");
         } catch (IOException e) {
             e.getStackTrace();
         }
         return numberOfRecords;
-    }
-
-    //MAIN METHOD
-    public static void main(String[] args) {
-        System.out.println("/**************************/ WELCOME TO STATE CENSUS ANALYSER /**************************/");
-
     }
 }
