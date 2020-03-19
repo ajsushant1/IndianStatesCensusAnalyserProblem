@@ -48,7 +48,7 @@ public class StateCensusAnalyser {
     }
 
     //METHOD TO LOAD STATE CODE CSV DATA AND COUNT NUMBER OF RECORD IN CSV FILE
-    public int loadStateCodeCSVData(String filePath) {
+    public int loadStateCodeCSVData(String filePath) throws StateCensusAnalyserException {
         int numberOfRecords = 0;
         try (Reader reader = Files.newBufferedReader(Paths.get(filePath))) {
             CsvToBean<CSVStateCode> csvStateCodeCsvToBean = new CsvToBeanBuilder(reader)
@@ -60,6 +60,8 @@ public class StateCensusAnalyser {
                 csvStateCodeIterator.next();
                 numberOfRecords++;
             }
+        } catch (NoSuchFileException e) {
+            throw new StateCensusAnalyserException(StateCensusAnalyserException.ExceptionType.NO_SUCH_FILE, "No such file");
         } catch (IOException e) {
             e.getStackTrace();
         }
