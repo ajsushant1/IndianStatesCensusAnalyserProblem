@@ -32,7 +32,7 @@ public class StateCensusAnalyser {
                     .withType(CSVStateCensus.class)
                     .withIgnoreLeadingWhiteSpace(true)
                     .build();
-            Iterator<CSVStateCensus> csvStateCensusIterator = csvStateCensusCsvToBean.iterator();
+            Iterator<CSVStateCensus> csvStateCensusIterator = this.getCSVIterator(reader, CSVStateCensus.class);
             while (csvStateCensusIterator.hasNext()) {
                 csvStateCensusIterator.next();
                 numberOfRecords++;
@@ -55,11 +55,8 @@ public class StateCensusAnalyser {
             throw new StateCensusAnalyserException(StateCensusAnalyserException.ExceptionType.INCORRECT_FILE_TYPE, "Incorrect file type");
         }
         try (Reader reader = Files.newBufferedReader(Paths.get(filePath))) {
-            CsvToBean<CSVStateCode> csvStateCodeCsvToBean = new CsvToBeanBuilder(reader)
-                    .withType(CSVStateCode.class)
-                    .withIgnoreLeadingWhiteSpace(true)
-                    .build();
-            Iterator<CSVStateCode> csvStateCodeIterator = csvStateCodeCsvToBean.iterator();
+
+            Iterator<CSVStateCode> csvStateCodeIterator = this.getCSVIterator(reader, CSVStateCode.class);
             while (csvStateCodeIterator.hasNext()) {
                 csvStateCodeIterator.next();
                 numberOfRecords++;
@@ -72,5 +69,14 @@ public class StateCensusAnalyser {
             e.getStackTrace();
         }
         return numberOfRecords;
+    }
+
+    //METHOD ITERATE CSV DATA FROM FILE
+    private <T> Iterator<T> getCSVIterator(Reader reader, Class<T> csvClass) {
+        CsvToBeanBuilder csvToBeanBuilder = new CsvToBeanBuilder(reader)
+                .withType(csvClass)
+                .withIgnoreLeadingWhiteSpace(true);
+        CsvToBean<T> csvToBean = csvToBeanBuilder.build();
+        return csvToBean.iterator();
     }
 }
