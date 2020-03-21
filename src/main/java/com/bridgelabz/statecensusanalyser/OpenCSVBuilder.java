@@ -7,10 +7,10 @@ import com.opencsv.bean.CsvToBeanBuilder;
 import java.io.Reader;
 import java.util.Iterator;
 
-public class OpenCSVBuilder {
-
+public class OpenCSVBuilder implements ICSVBuilder {
+    @Override
     //METHOD ITERATE CSV DATA FROM FILE
-    public <T> Iterator<T> getCSVIterator(Reader reader, Class<T> csvClass) {
+    public Iterator getCSVIterator(Reader reader, Class csvClass) {
         CsvToBeanBuilder csvToBeanBuilder = new CsvToBeanBuilder(reader)
                 .withType(csvClass)
                 .withIgnoreLeadingWhiteSpace(true);

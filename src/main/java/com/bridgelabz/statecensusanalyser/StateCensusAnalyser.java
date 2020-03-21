@@ -26,8 +26,8 @@ public class StateCensusAnalyser {
         }
 
         try (Reader reader = Files.newBufferedReader(Paths.get(filePath))) {
-            OpenCSVBuilder openCSVBuilder = new OpenCSVBuilder();
-            Iterator<CSVStateCensus> csvStateCensusIterator = openCSVBuilder.getCSVIterator(reader, CSVStateCensus.class);
+            ICSVBuilder csvBuilder = CSVBuilderFactory.createCSVBuilder();
+            Iterator<CSVStateCensus> csvStateCensusIterator = csvBuilder.getCSVIterator(reader, CSVStateCensus.class);
             while (csvStateCensusIterator.hasNext()) {
                 csvStateCensusIterator.next();
                 numberOfRecords++;
@@ -50,8 +50,8 @@ public class StateCensusAnalyser {
             throw new StateCensusAnalyserException(StateCensusAnalyserException.ExceptionType.INCORRECT_FILE_TYPE, "Incorrect file type");
         }
         try (Reader reader = Files.newBufferedReader(Paths.get(filePath))) {
-            OpenCSVBuilder openCSVBuilder = new OpenCSVBuilder();
-            Iterator<CSVStateCode> csvStateCodeIterator = openCSVBuilder.getCSVIterator(reader, CSVStateCode.class);
+            ICSVBuilder csvBuilder = CSVBuilderFactory.createCSVBuilder();
+            Iterator<CSVStateCode> csvStateCodeIterator = csvBuilder.getCSVIterator(reader, CSVStateCode.class);
             while (csvStateCodeIterator.hasNext()) {
                 csvStateCodeIterator.next();
                 numberOfRecords++;
