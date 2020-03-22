@@ -1,5 +1,6 @@
 package com.bridgelabz.statecensusanalyser;
 
+import com.bridgelabz.statecensusanalyserexception.CSVBuilderException;
 import com.bridgelabz.statecensusanalyserexception.StateCensusAnalyserException;
 
 import java.io.IOException;
@@ -38,6 +39,8 @@ public class StateCensusAnalyser {
             throw new StateCensusAnalyserException(StateCensusAnalyserException.ExceptionType.NO_SUCH_FILE, "No such file");
         } catch (IOException e) {
             e.getStackTrace();
+        } catch (CSVBuilderException e) {
+            e.printStackTrace();
         }
         return numberOfRecords;
     }
@@ -62,6 +65,8 @@ public class StateCensusAnalyser {
             throw new StateCensusAnalyserException(StateCensusAnalyserException.ExceptionType.NO_SUCH_FILE, "No such file");
         } catch (IOException e) {
             e.getStackTrace();
+        } catch (CSVBuilderException e) {
+            e.printStackTrace();
         }
         return numberOfRecords;
     }
