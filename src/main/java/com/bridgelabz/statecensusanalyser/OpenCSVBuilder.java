@@ -10,6 +10,7 @@ import java.io.Reader;
 import java.util.List;
 
 public class OpenCSVBuilder implements ICSVBuilder {
+
     //METHOD ITERATE CSV DATA FROM FILE
     @Override
     public <T> List<T> getCSVList(Reader reader, Class<T> csvClass) throws CSVBuilderException {
