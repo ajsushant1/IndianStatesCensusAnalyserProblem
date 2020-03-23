@@ -113,7 +113,7 @@ public class StateCensusAnalyserTest {
     }
 
     @Test
-    public void givenIndianCensusData_WhenSortedOnState_ShouldReturnSortedResult() {
+    public void givenTheStateCensusData_WhenSortedOnState_ShouldReturnSortedResult() {
         try {
             stateCensusAnalyser.loadCSVData(CSV_FILE_PATH);
             String sortedCensusData = stateCensusAnalyser.getStateWiseSortedCensusData();
@@ -125,4 +125,13 @@ public class StateCensusAnalyserTest {
         }
     }
 
+    @Test
+    public void givenTheStateCensusDataInJson_WhenNoCensusData_ShouldThrowException() {
+        try {
+            String sortedCensusData = stateCensusAnalyser.getStateWiseSortedCensusData();
+            CSVStateCensus[] csvStateCensuses = new Gson().fromJson(sortedCensusData, CSVStateCensus[].class);
+        } catch (StateCensusAnalyserException e) {
+            Assert.assertEquals(StateCensusAnalyserException.ExceptionType.NO_CENSUS_DATA, e.type);
+        }
+    }
 }
