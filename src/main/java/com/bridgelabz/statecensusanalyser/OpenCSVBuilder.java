@@ -24,5 +24,4 @@ public class OpenCSVBuilder implements ICSVBuilder {
             throw new CSVBuilderException(CSVBuilderException.ExceptionType.UNABLE_TO_PARSE, "Unable to parse");
         }
     }
-
 }
