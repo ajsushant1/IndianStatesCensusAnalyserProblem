@@ -8,7 +8,7 @@ import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
-import java.util.Iterator;
+import java.util.List;
 
 public class StateCensusAnalyser {
 
@@ -25,14 +25,10 @@ public class StateCensusAnalyser {
         if (!extension.equals("csv")) {
             throw new StateCensusAnalyserException(StateCensusAnalyserException.ExceptionType.INCORRECT_FILE_TYPE, "Incorrect file type");
         }
-
         try (Reader reader = Files.newBufferedReader(Paths.get(filePath))) {
             ICSVBuilder csvBuilder = CSVBuilderFactory.createCSVBuilder();
-            Iterator<CSVStateCensus> csvStateCensusIterator = csvBuilder.getCSVIterator(reader, CSVStateCensus.class);
-            while (csvStateCensusIterator.hasNext()) {
-                csvStateCensusIterator.next();
-                numberOfRecords++;
-            }
+            List<CSVStateCensus> csvStateCensusList = csvBuilder.getCSVList(reader, CSVStateCensus.class);
+            numberOfRecords = csvStateCensusList.size();
         } catch (RuntimeException e) {
             throw new StateCensusAnalyserException(StateCensusAnalyserException.ExceptionType.INCORRECT_DELIMITER_OR_HEADER, "Incorrect delimiter or header");
         } catch (NoSuchFileException e) {
@@ -54,11 +50,8 @@ public class StateCensusAnalyser {
         }
         try (Reader reader = Files.newBufferedReader(Paths.get(filePath))) {
             ICSVBuilder csvBuilder = CSVBuilderFactory.createCSVBuilder();
-            Iterator<CSVStateCode> csvStateCodeIterator = csvBuilder.getCSVIterator(reader, CSVStateCode.class);
-            while (csvStateCodeIterator.hasNext()) {
-                csvStateCodeIterator.next();
-                numberOfRecords++;
-            }
+            List<CSVStateCode> stateCodeList = csvBuilder.getCSVList(reader, CSVStateCode.class);
+            numberOfRecords = stateCodeList.size();
         } catch (RuntimeException e) {
             throw new StateCensusAnalyserException(StateCensusAnalyserException.ExceptionType.INCORRECT_DELIMITER_OR_HEADER, "Incorrect delimiter or header in file");
         } catch (NoSuchFileException e) {
