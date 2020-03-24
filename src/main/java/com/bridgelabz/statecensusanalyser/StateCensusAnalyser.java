@@ -15,6 +15,7 @@ import java.util.List;
 public class StateCensusAnalyser {
 
     List<CSVStateCensus> csvStateCensusList = null;
+    List<CSVStateCode> stateCodeList = null;
 
     //MAIN METHOD
     public static void main(String[] args) {
@@ -54,7 +55,7 @@ public class StateCensusAnalyser {
         }
         try (Reader reader = Files.newBufferedReader(Paths.get(filePath))) {
             ICSVBuilder csvBuilder = CSVBuilderFactory.createCSVBuilder();
-            List<CSVStateCode> stateCodeList = csvBuilder.getCSVList(reader, CSVStateCode.class);
+            stateCodeList = csvBuilder.getCSVList(reader, CSVStateCode.class);
             numberOfRecords = stateCodeList.size();
         } catch (RuntimeException e) {
             throw new StateCensusAnalyserException(StateCensusAnalyserException.ExceptionType.INCORRECT_DELIMITER_OR_HEADER, "Incorrect delimiter or header in file");
@@ -68,24 +69,34 @@ public class StateCensusAnalyser {
         return numberOfRecords;
     }
 
+    //METHOD TO SORT STATE CENSUS DATA BY STATE
     public String getStateWiseSortedCensusData() throws StateCensusAnalyserException {
         if (csvStateCensusList == null || csvStateCensusList.size() == 0) {
             throw new StateCensusAnalyserException(StateCensusAnalyserException.ExceptionType.NO_CENSUS_DATA, "No census data");
         }
         Comparator<CSVStateCensus> censusComparator = Comparator.comparing(csvStateCensus -> csvStateCensus.getState());
-        this.sortCSVData(censusComparator);
+        this.sortCSVData(censusComparator, csvStateCensusList);
         String sortedStateCensusJson = new Gson().toJson(csvStateCensusList);
         return sortedStateCensusJson;
     }
 
-    private void sortCSVData(Comparator<CSVStateCensus> censusComparator) {
-        for (int i = 0; i < csvStateCensusList.size() - 1; i++) {
-            for (int j = 0; j < csvStateCensusList.size() - i - 1; j++) {
-                CSVStateCensus census1 = csvStateCensusList.get(j);
-                CSVStateCensus census2 = csvStateCensusList.get(j + 1);
-                if (censusComparator.compare(census1, census2) > 0) {
-                    csvStateCensusList.set(j, census2);
-                    csvStateCensusList.set(j + 1, census1);
+    //METHOD TO SORT STATE CODE DATA BY STATE CODE
+    public String getStateCodeWiseSortedData() {
+        Comparator<CSVStateCode> stateCodeComparator = Comparator.comparing(csvStateCode -> csvStateCode.getStateCode());
+        this.sortCSVData(stateCodeComparator, stateCodeList);
+        String sortedStateCodeJson = new Gson().toJson(stateCodeList);
+        return sortedStateCodeJson;
+    }
+
+    //METHOD TO SORT CSV DATA
+    private <T> void sortCSVData(Comparator<T> csvComparator, List<T> csvList) {
+        for (int i = 0; i < csvList.size() - 1; i++) {
+            for (int j = 0; j < csvList.size() - i - 1; j++) {
+                T census1 = csvList.get(j);
+                T census2 = csvList.get(j + 1);
+                if (csvComparator.compare(census1, census2) > 0) {
+                    csvList.set(j, census2);
+                    csvList.set(j + 1, census1);
                 }
             }
         }
