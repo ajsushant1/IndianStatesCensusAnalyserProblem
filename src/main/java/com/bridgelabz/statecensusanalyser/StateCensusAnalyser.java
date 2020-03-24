@@ -81,7 +81,10 @@ public class StateCensusAnalyser {
     }
 
     //METHOD TO SORT STATE CODE DATA BY STATE CODE
-    public String getStateCodeWiseSortedData() {
+    public String getStateCodeWiseSortedData() throws StateCensusAnalyserException {
+        if (stateCodeList == null || stateCodeList.size() == 0) {
+            throw new StateCensusAnalyserException(StateCensusAnalyserException.ExceptionType.NO_CENSUS_DATA, "No census data");
+        }
         Comparator<CSVStateCode> stateCodeComparator = Comparator.comparing(csvStateCode -> csvStateCode.getStateCode());
         this.sortCSVData(stateCodeComparator, stateCodeList);
         String sortedStateCodeJson = new Gson().toJson(stateCodeList);
