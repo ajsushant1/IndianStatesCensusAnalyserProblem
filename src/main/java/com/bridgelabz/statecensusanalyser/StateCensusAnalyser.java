@@ -9,13 +9,20 @@ import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class StateCensusAnalyser {
 
     List<CSVStateCensus> csvStateCensusList = null;
     List<CSVStateCode> stateCodeList = null;
+    Map<String, CSVStateCensus> stateCensusMap = null;
+    Map<String, CSVStateCode> csvStateCodeMap = null;
+
+    public StateCensusAnalyser() {
+        this.stateCensusMap = new HashMap<>();
+        this.csvStateCodeMap = new HashMap<>();
+    }
 
     //MAIN METHOD
     public static void main(String[] args) {
@@ -32,8 +39,13 @@ public class StateCensusAnalyser {
         }
         try (Reader reader = Files.newBufferedReader(Paths.get(filePath))) {
             ICSVBuilder csvBuilder = CSVBuilderFactory.createCSVBuilder();
-            csvStateCensusList = csvBuilder.getCSVList(reader, CSVStateCensus.class);
-            numberOfRecords = csvStateCensusList.size();
+            Iterator<CSVStateCensus> stateCensusIterator = csvBuilder.getCSVIterator(reader, CSVStateCensus.class);
+            while (stateCensusIterator.hasNext()) {
+                CSVStateCensus stateCensus = stateCensusIterator.next();
+                this.stateCensusMap.put(stateCensus.state, stateCensus);
+                csvStateCensusList = stateCensusMap.values().stream().collect(Collectors.toList());
+            }
+            numberOfRecords = stateCensusMap.size();
         } catch (RuntimeException e) {
             throw new StateCensusAnalyserException(StateCensusAnalyserException.ExceptionType.INCORRECT_DELIMITER_OR_HEADER, "Incorrect delimiter or header");
         } catch (NoSuchFileException e) {
@@ -55,8 +67,13 @@ public class StateCensusAnalyser {
         }
         try (Reader reader = Files.newBufferedReader(Paths.get(filePath))) {
             ICSVBuilder csvBuilder = CSVBuilderFactory.createCSVBuilder();
-            stateCodeList = csvBuilder.getCSVList(reader, CSVStateCode.class);
-            numberOfRecords = stateCodeList.size();
+            Iterator<CSVStateCode> stateCodeIterator = csvBuilder.getCSVIterator(reader, CSVStateCode.class);
+            while (stateCodeIterator.hasNext()) {
+                CSVStateCode stateCode = stateCodeIterator.next();
+                this.csvStateCodeMap.put(stateCode.stateCode, stateCode);
+                stateCodeList = csvStateCodeMap.values().stream().collect(Collectors.toList());
+            }
+            numberOfRecords = csvStateCodeMap.size();
         } catch (RuntimeException e) {
             throw new StateCensusAnalyserException(StateCensusAnalyserException.ExceptionType.INCORRECT_DELIMITER_OR_HEADER, "Incorrect delimiter or header in file");
         } catch (NoSuchFileException e) {
@@ -74,7 +91,7 @@ public class StateCensusAnalyser {
         if (csvStateCensusList == null || csvStateCensusList.size() == 0) {
             throw new StateCensusAnalyserException(StateCensusAnalyserException.ExceptionType.NO_CENSUS_DATA, "No census data");
         }
-        Comparator<CSVStateCensus> censusComparator = Comparator.comparing(csvStateCensus -> csvStateCensus.getState());
+        Comparator<CSVStateCensus> censusComparator = Comparator.comparing(csvStateCensus -> csvStateCensus.state);
         this.sortCSVData(censusComparator, csvStateCensusList);
         String sortedStateCensusJson = new Gson().toJson(csvStateCensusList);
         return sortedStateCensusJson;
@@ -85,7 +102,7 @@ public class StateCensusAnalyser {
         if (stateCodeList == null || stateCodeList.size() == 0) {
             throw new StateCensusAnalyserException(StateCensusAnalyserException.ExceptionType.NO_CENSUS_DATA, "No census data");
         }
-        Comparator<CSVStateCode> stateCodeComparator = Comparator.comparing(csvStateCode -> csvStateCode.getStateCode());
+        Comparator<CSVStateCode> stateCodeComparator = Comparator.comparing(csvStateCode -> csvStateCode.stateCode);
         this.sortCSVData(stateCodeComparator, stateCodeList);
         String sortedStateCodeJson = new Gson().toJson(stateCodeList);
         return sortedStateCodeJson;
