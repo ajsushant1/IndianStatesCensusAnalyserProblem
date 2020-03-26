@@ -98,6 +98,18 @@ public class StateCensusAnalyser {
         return sortedStateCensusJson;
     }
 
+    //METHOD TO SORT STATE CENSUS DATA BY POPULATION
+    public String getPopulationWiseSortedCensusData() throws StateCensusAnalyserException {
+        if (censusList == null || censusList.size() == 0) {
+            throw new StateCensusAnalyserException(StateCensusAnalyserException.ExceptionType.NO_CENSUS_DATA, "No census data");
+        }
+        Comparator<CensusDAO> censusComparator = Comparator.comparing(censusDAO -> censusDAO.population);
+        this.sortCSVData(censusComparator);
+        Collections.reverse(censusList);
+        String sortedStateCensusJson = new Gson().toJson(censusList);
+        return sortedStateCensusJson;
+    }
+
     //METHOD TO SORT CSV DATA
     private void sortCSVData(Comparator<CensusDAO> csvComparator) {
         for (int i = 0; i < censusList.size() - 1; i++) {
