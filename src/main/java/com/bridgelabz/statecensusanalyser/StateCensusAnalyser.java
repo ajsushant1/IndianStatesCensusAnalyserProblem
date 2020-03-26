@@ -144,4 +144,30 @@ public class StateCensusAnalyser {
             }
         }
     }
+
+    public int loadUSCensusData(String usCensusCsvFilePath) throws StateCensusAnalyserException {
+        int numberOfRecords = 0;
+        String extension = usCensusCsvFilePath.substring(usCensusCsvFilePath.lastIndexOf(".") + 1);
+        if (!extension.equals("csv")) {
+            throw new StateCensusAnalyserException(StateCensusAnalyserException.ExceptionType.INCORRECT_FILE_TYPE, "Incorrect file type");
+        }
+        try (Reader reader = Files.newBufferedReader(Paths.get(usCensusCsvFilePath))) {
+            ICSVBuilder csvBuilder = CSVBuilderFactory.createCSVBuilder();
+            Iterator<CSVUSCensus> stateCensusIterator = csvBuilder.getCSVIterator(reader, CSVUSCensus.class);
+            Iterable<CSVUSCensus> stateCensuses = () -> stateCensusIterator;
+            StreamSupport.stream(stateCensuses.spliterator(), false)
+                    .forEach(csvStateCensus -> censusMap.put(csvStateCensus.state, new CensusDAO(csvStateCensus)));
+            censusList = censusMap.values().stream().collect(Collectors.toList());
+            numberOfRecords = censusMap.size();
+        } catch (RuntimeException e) {
+            throw new StateCensusAnalyserException(StateCensusAnalyserException.ExceptionType.INCORRECT_DELIMITER_OR_HEADER, "Incorrect delimiter or header");
+        } catch (NoSuchFileException e) {
+            throw new StateCensusAnalyserException(StateCensusAnalyserException.ExceptionType.NO_SUCH_FILE, "No such file");
+        } catch (IOException e) {
+            e.getStackTrace();
+        } catch (CSVBuilderException e) {
+            e.printStackTrace();
+        }
+        return numberOfRecords;
+    }
 }
