@@ -19,6 +19,7 @@ public class StateCensusAnalyserTest {
     private static final String STATE_CODE_INCORRECT_FILE_TYPE = "src/test/resources/StateCode.pdf";
     private static final String STATE_CODE_INCORRECT_DELIMITER_FILE = "src/test/resources/StateCodeIncorrectDelimiter.csv";
     private static final String STATE_CODE_INCORRECT_HEADER_FILE = "src/test/resources/StateCodeIncorrectHeader.csv";
+    private static final String US_CENSUS_CSV_FILE_PATH ="src/test/resources/USCensusData.csv";
     StateCensusAnalyser stateCensusAnalyser = new StateCensusAnalyser();
 
     @Test
@@ -195,5 +196,16 @@ public class StateCensusAnalyserTest {
         } catch (StateCensusAnalyserException e) {
             e.getStackTrace();
         }
+    }
+
+    @Test
+    public void givenTheUSCensusCSVFile_WhenNumberOfRecordMatches_ShouldReturnTrue() {
+        try {
+            int numberOfRecords = stateCensusAnalyser.loadUSCensusData(US_CENSUS_CSV_FILE_PATH);
+            Assert.assertEquals(51, numberOfRecords);
+        } catch (StateCensusAnalyserException e) {
+            e.printStackTrace();
+        }
+
     }
 }
