@@ -11,6 +11,7 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class StateCensusAnalyser {
 
@@ -39,11 +40,10 @@ public class StateCensusAnalyser {
         try (Reader reader = Files.newBufferedReader(Paths.get(filePath))) {
             ICSVBuilder csvBuilder = CSVBuilderFactory.createCSVBuilder();
             Iterator<CSVStateCensus> stateCensusIterator = csvBuilder.getCSVIterator(reader, CSVStateCensus.class);
-            while (stateCensusIterator.hasNext()) {
-                CensusDAO censusDAO = new CensusDAO(stateCensusIterator.next());
-                this.censusMap.put(censusDAO.state, censusDAO);
-                censusList = censusMap.values().stream().collect(Collectors.toList());
-            }
+            Iterable<CSVStateCensus> stateCensuses = () -> stateCensusIterator;
+            StreamSupport.stream(stateCensuses.spliterator(), false)
+                    .forEach(csvStateCensus -> censusMap.put(csvStateCensus.state, new CensusDAO(csvStateCensus)));
+            censusList = censusMap.values().stream().collect(Collectors.toList());
             numberOfRecords = censusMap.size();
         } catch (RuntimeException e) {
             throw new StateCensusAnalyserException(StateCensusAnalyserException.ExceptionType.INCORRECT_DELIMITER_OR_HEADER, "Incorrect delimiter or header");
@@ -67,13 +67,10 @@ public class StateCensusAnalyser {
         try (Reader reader = Files.newBufferedReader(Paths.get(filePath))) {
             ICSVBuilder csvBuilder = CSVBuilderFactory.createCSVBuilder();
             Iterator<CSVStateCode> stateCodeIterator = csvBuilder.getCSVIterator(reader, CSVStateCode.class);
-            while (stateCodeIterator.hasNext()) {
-                CSVStateCode csvStateCode = stateCodeIterator.next();
-                CensusDAO censusDTO = censusMap.get(csvStateCode.stateName);
-                if (censusDTO == null)
-                    continue;
-                censusDTO.stateCode = csvStateCode.stateCode;
-            }
+            Iterable<CSVStateCode> stateCodes = () -> stateCodeIterator;
+            StreamSupport.stream(stateCodes.spliterator(), false)
+                    .filter(csvStateCode -> censusMap.get(csvStateCode.stateName) != null)
+                    .forEach(csvStateCode -> censusMap.get(csvStateCode.stateName).stateCode = csvStateCode.stateCode);
             numberOfRecords = censusMap.size();
         } catch (RuntimeException e) {
             throw new StateCensusAnalyserException(StateCensusAnalyserException.ExceptionType.INCORRECT_DELIMITER_OR_HEADER, "Incorrect delimiter or header in file");
