@@ -160,4 +160,16 @@ public class StateCensusAnalyserTest {
             Assert.assertEquals(StateCensusAnalyserException.ExceptionType.NO_CENSUS_DATA, e.type);
         }
     }
+
+    @Test
+    public void givenTheStateCensusData_WhenSortedOnPopulation_ShouldReturnSortedResult() {
+        try {
+            stateCensusAnalyser.loadCSVData(CSV_FILE_PATH);
+            String sortedCensusData = stateCensusAnalyser.getPopulationWiseSortedCensusData();
+            CSVStateCensus[] csvStateCensuses = new Gson().fromJson(sortedCensusData, CSVStateCensus[].class);
+            Assert.assertEquals(199812341, csvStateCensuses[0].population);
+        } catch (StateCensusAnalyserException e) {
+            e.getStackTrace();
+        }
+    }
 }
