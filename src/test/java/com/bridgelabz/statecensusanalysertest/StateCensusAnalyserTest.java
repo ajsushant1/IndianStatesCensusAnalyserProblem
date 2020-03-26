@@ -172,4 +172,16 @@ public class StateCensusAnalyserTest {
             e.getStackTrace();
         }
     }
+
+    @Test
+    public void givenTheStateCensusData_WhenSortedOnDensityPerSqKm_ShouldReturnSortedResult() {
+        try {
+            stateCensusAnalyser.loadCSVData(CSV_FILE_PATH);
+            String sortedCensusData = stateCensusAnalyser.getPopulationDensityWiseSortedCensusData();
+            CSVStateCensus[] csvStateCensuses = new Gson().fromJson(sortedCensusData, CSVStateCensus[].class);
+            Assert.assertEquals(1102, csvStateCensuses[0].density);
+        } catch (StateCensusAnalyserException e) {
+            e.getStackTrace();
+        }
+    }
 }
