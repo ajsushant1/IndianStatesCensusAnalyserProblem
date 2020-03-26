@@ -70,8 +70,9 @@ public class StateCensusAnalyserTest {
     @Test
     public void givenTheStatesCodeCSVFile_WhenNumberOfRecordMatches_ShouldReturnTrue() {
         try {
+            stateCensusAnalyser.loadCSVData(CSV_FILE_PATH);
             int numberOfRecords = stateCensusAnalyser.loadStateCodeCSVData(STATE_CODE_CSV_FILE_PATH);
-            Assert.assertEquals(37, numberOfRecords);
+            Assert.assertEquals(29, numberOfRecords);
         } catch (StateCensusAnalyserException e) {
             e.printStackTrace();
         }
@@ -139,11 +140,12 @@ public class StateCensusAnalyserTest {
     @Test
     public void givenTheStateCodeData_WhenSortedOnStateCode_ShouldReturnSortedResult() {
         try {
+            stateCensusAnalyser.loadCSVData(CSV_FILE_PATH);
             stateCensusAnalyser.loadStateCodeCSVData(STATE_CODE_CSV_FILE_PATH);
-            String stateCodeWiseSortedData = stateCensusAnalyser.getStateCodeWiseSortedData();
+            String stateCodeWiseSortedData = stateCensusAnalyser.getStateWiseSortedCensusData();
             CSVStateCode[] csvStateCodes = new Gson().fromJson(stateCodeWiseSortedData, CSVStateCode[].class);
-            Assert.assertEquals("AD", csvStateCodes[0].stateCode);
-            Assert.assertEquals("WB", csvStateCodes[36].stateCode);
+            Assert.assertEquals("AP", csvStateCodes[0].stateCode);
+            Assert.assertEquals("WB", csvStateCodes[28].stateCode);
         } catch (StateCensusAnalyserException e) {
             e.getStackTrace();
         }
@@ -152,7 +154,7 @@ public class StateCensusAnalyserTest {
     @Test
     public void givenTheStateCodeDataInJson_WhenNoCensusData_ShouldThrowException() {
         try {
-            String stateCodeWiseSortedData = stateCensusAnalyser.getStateCodeWiseSortedData();
+            String stateCodeWiseSortedData = stateCensusAnalyser.getStateWiseSortedCensusData();
             CSVStateCode[] csvStateCodes = new Gson().fromJson(stateCodeWiseSortedData, CSVStateCode[].class);
         } catch (StateCensusAnalyserException e) {
             Assert.assertEquals(StateCensusAnalyserException.ExceptionType.NO_CENSUS_DATA, e.type);
