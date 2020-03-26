@@ -2,10 +2,10 @@ package com.bridgelabz.statecensusanalyser;
 
 public class CensusDAO {
     public String state;
-    public int population;
-    public int area;
-    public int density;
     public String stateCode;
+    public int population;
+    public double area;
+    public double density;
 
     public CensusDAO(CSVStateCensus csvStateCensus) {
         this.state = csvStateCensus.state;
@@ -14,4 +14,11 @@ public class CensusDAO {
         this.density = csvStateCensus.density;
     }
 
+    public CensusDAO(CSVUSCensus csvUSCensus) {
+        state = csvUSCensus.state;
+        stateCode = csvUSCensus.stateId;
+        population = csvUSCensus.population;
+        density = csvUSCensus.populationDensity;
+        area = csvUSCensus.totalArea;
+    }
 }
