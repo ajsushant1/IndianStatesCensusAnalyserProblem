@@ -13,12 +13,4 @@ public class CensusDAO {
         this.area = csvStateCensus.area;
         this.density = csvStateCensus.density;
     }
-
-    public CensusDAO(CSVUSCensus csvUSCensus) {
-        state = csvUSCensus.state;
-        stateCode = csvUSCensus.stateId;
-        population = csvUSCensus.population;
-        density = csvUSCensus.populationDensity;
-        area = csvUSCensus.totalArea;
-    }
 }
