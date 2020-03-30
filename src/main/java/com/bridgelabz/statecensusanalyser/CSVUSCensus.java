@@ -13,4 +13,15 @@ public class CSVUSCensus {
     public double totalArea;
     @CsvBindByName(column = "Population Density", required = true)
     public double populationDensity;
+
+    public CSVUSCensus(String stateId, String state, int population, double totalArea, double populationDensity) {
+        this.stateId = stateId;
+        this.state = state;
+        this.population = population;
+        this.totalArea = totalArea;
+        this.populationDensity = populationDensity;
+    }
+
+    public CSVUSCensus() {
+    }
 }
