@@ -223,4 +223,21 @@ public class StateCensusAnalyserTest {
             e.printStackTrace();
         }
     }
+
+    @Test
+    public void givenTheUSAndIndiaCensusData_WhenSortedOnPopulation_ShouldReturnMostPopulousStateWithDensity() {
+        try {
+            indianCensusAnalyser.loadStateCensusCSVData(INDIA, STATE_CENSUS_CSV_FILE_PATH);
+            String sortedIndiaCensusData = indianCensusAnalyser.getSortedCensusData(StateCensusAnalyser.SortingMode.POPULATION);
+            CSVStateCensus[] indiaCensuses = new Gson().fromJson(sortedIndiaCensusData, CSVStateCensus[].class);
+
+            usCensusAnalyser.loadStateCensusCSVData(US, US_CENSUS_CSV_FILE_PATH);
+            String sortedUSCensusData = usCensusAnalyser.getSortedCensusData(StateCensusAnalyser.SortingMode.POPULATION);
+            CSVUSCensus[] usCensuses = new Gson().fromJson(sortedUSCensusData, CSVUSCensus[].class);
+
+            Assert.assertEquals(true, String.valueOf(indiaCensuses[0].density).compareToIgnoreCase(String.valueOf(usCensuses[0].populationDensity)) < 0);
+        } catch (StateCensusAnalyserException e) {
+            e.printStackTrace();
+        }
+    }
 }
