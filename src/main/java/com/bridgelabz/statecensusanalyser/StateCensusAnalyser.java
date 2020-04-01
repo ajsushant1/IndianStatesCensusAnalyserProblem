@@ -43,7 +43,7 @@ public class StateCensusAnalyser {
         return new Gson().toJson(arrayList);
     }
 
-    //ENUM FOR Sorting MODE
+    //ENUM FOR SORTING MODE
     public enum SortingMode {STATE, POPULATION, DENSITY, AREA}
 
     //ENUM FOR COUNTRY
